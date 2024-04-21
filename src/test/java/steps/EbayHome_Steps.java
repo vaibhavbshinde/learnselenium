@@ -1,85 +1,77 @@
+/*
+ *Class : Common Actions class
+ *Author : VaibhavS
+ */
 package steps;
 
-import static org.junit.Assert.fail;
-
-import java.util.List;
-
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-
-import actions.Common_Actions;
-import actions.EbayHome_Actions;
+import actions.CommonActions;
+import actions.EbayHomePageActions;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.Assert;
 
+@Slf4j
 public class EbayHome_Steps {
-	Common_Actions common_actions;
-	EbayHome_Actions ebayhome_actions;
-	
-	public EbayHome_Steps(Common_Actions common_actions, EbayHome_Actions ebayhome_actions) {
-		this.common_actions = common_actions;
-		this.ebayhome_actions = ebayhome_actions;
-	}
-	
-	@Given("I am on Eaby Home Page")
-	public void i_am_on_Eaby_Home_Page() {
-	   common_actions.goToUrl("https://www.ebay.com/");
+	CommonActions commonActions;
+	EbayHomePageActions ebayHomePageActions;
+
+	public EbayHome_Steps(CommonActions commonActions, EbayHomePageActions ebayHomePageActions) {
+		this.commonActions = commonActions;
+		this.ebayHomePageActions = ebayHomePageActions;
 	}
 
-	@When("I click on Advanced Link")
-	public void i_click_on_Advanced_Link() {
-	    ebayhome_actions.clickAdvancedLink();
+	@Given("User visit ebay home page")
+	public void user_visit_ebay_home_page() {
+		commonActions.startNavigation();
 	}
 
-	@Then("I navigate to Advanced Search page")
-	public void i_navigate_to_Advanced_Search_page() {
-	    String expUrl = "https://www.ebay.com/sch/ebayadvsearch";
-	    String actUrl = common_actions.getCurrentPageUrl();
-	    if (!expUrl.equals(actUrl)) {
-	    	fail("Page does not navigae to expected page");
-	    }
-	}
-	
-	@When("I serach for {string}")
-	public void i_serach_for_iPhone_11(String str1) throws Exception {
-		ebayhome_actions.searchAnItem(str1);
-		ebayhome_actions.clickSearchButton();
-		Thread.sleep(1000);
+	@When("User click on advance link")
+	public void user_click_on_advance_link() {
+		ebayHomePageActions.clickAdvancedLink();
 	}
 
-	@Then("I validate atleast {int} search items present")
-	public void i_validate_atleast_search_items_presentint (int count) {
-	    int itemCountInt = ebayhome_actions.getSeatchItemsCount();
-	    if(itemCountInt <= count) {
-	    	fail("Less than 1000 results shown");
-	    }
-	}
-	
-	@When("I serach for {string} in {string} category")
-	public void i_serach_for_in_category(String string, String string2) throws Exception {
-		ebayhome_actions.searchAnItem(string);
-		ebayhome_actions.selectCategoryOption(string2);
-		ebayhome_actions.clickSearchButton();
-		Thread.sleep(1000);
-	}
-	
-	@When("I click on {string}")
-	public void i_click_on(String string) throws Exception {
-	   ebayhome_actions.clickOnLinkByText(string);
-	   Thread.sleep(1000);
+	@Then("User navigate to advanced search page")
+	public void user_navigate_to_advanced_search_page() {
+		String expUrl = "https://www.ebay.com/sch/ebayadvsearch";
+		String actUrl = commonActions.getCurrentPageUrl();
+		Assert.assertTrue("Expected navigation URL is not matching",expUrl.equals(actUrl));
 	}
 
-	@Then("I validate that page navigates to {string} and title contains {string}")
-	public void i_validate_that_page_navigates_to_and_title_contains(String url, String title) {
-	    String actUrl = common_actions.getCurrentPageUrl();
-	    String actTitle = common_actions.getCurrentPageTitle();
-	    if (!actUrl.equals(url)) {
-	    	fail("Page does navigate to expected url: " + url);
-	    }
-	    if (!actTitle.contains(title)) {
-	    	fail("Title mismatch");
-	    }
+	@When("User search {string}")
+	public void user_search(String searchStr) {
+		ebayHomePageActions.searchAnItem(searchStr);
+		ebayHomePageActions.clickSearchButton();
+		commonActions.sleep(1);
+	}
+
+	@Then("Verify that search result count more than {int} item search")
+	public void verify_that_search_result_count_more_than_item_search(int expectedCount) {
+		int totalSearchCount = ebayHomePageActions.getSeatchItemsCount();
+		log.info("Total Search Count {} " , totalSearchCount);
+		Assert.assertFalse("Total search product count is less than at least expected count",(totalSearchCount<=expectedCount));
+	}
+
+	@When("User search {string} in {string}")
+	public void user_search_in_category(String productName, String productCategory) {
+		ebayHomePageActions.searchAnItem(productName);
+		ebayHomePageActions.selectCategoryOption(productCategory);
+		ebayHomePageActions.clickSearchButton();
+		commonActions.sleep(1);
+	}
+
+	@When("User click on {string}")
+	public void user_click_on(String string) {
+		ebayHomePageActions.clickOnLinkByText(string);
+		commonActions.sleep(1);
+	}
+
+	@Then("Verify that page navigates to {string} and title contains {string}")
+	public void verify_that_page_navigates_to_and_title_contains(String url, String title) {
+		String actUrl = commonActions.getCurrentPageUrl();
+		String actTitle = commonActions.getCurrentPageTitle();
+    	Assert.assertTrue("Expected navigate page url is not matching",(actUrl.equals(url)));
+		Assert.assertTrue("Expected page title is not matching ",(actTitle.contains(title)));
 	}
 }

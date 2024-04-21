@@ -1,46 +1,46 @@
 package steps;
 
-import static org.junit.Assert.fail; 
+import static org.junit.Assert.fail;
 
-import org.openqa.selenium.WebDriver;
-
-import actions.Common_Actions;
+import actions.CommonActions;
 import actions.EbayAdvancedSearch_Actions;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import org.junit.Assert;
+
+import java.util.List;
 
 public class EbayAdvancedSearch_Steps {
-	Common_Actions common_actions;
+	CommonActions common_actions;
 	EbayAdvancedSearch_Actions ebayadvancedsearch_actions;
 	
-	public EbayAdvancedSearch_Steps(Common_Actions common_actions, EbayAdvancedSearch_Actions ebayadvancedsearch_actions) {
+	public EbayAdvancedSearch_Steps(CommonActions common_actions, EbayAdvancedSearch_Actions ebayadvancedsearch_actions) {
 		this.common_actions = common_actions;
 		this.ebayadvancedsearch_actions = ebayadvancedsearch_actions;
 	}
 	
-	@Given("I am Ebay Advanced Search Page")
-	public void i_am_Ebay_Advanced_Search_Page() throws InterruptedException {
-		common_actions.goToUrl("https://www.ebay.com/sch/ebayadvsearch");
+	@Given("User is on ebay advanced search page")
+	public void user_is_on_ebay_advanced_search_page() {
+		common_actions.goToUrl(common_actions.landingPageURI()+"sch/ebayadvsearch");
 	}
 
-	@When("I click on Ebay Logo")
-	public void i_click_on_Ebay_Logo() {
+	@When("User click on ebay logo")
+	public void user_click_on_ebay_logo() {
 		ebayadvancedsearch_actions.clickOnEbayLogo();
 	}
 
-	@Then("I am navigated to Ebay Home Page")
-	public void i_am_navigated_to_Ebay_Home_Page() {
-	    String expUrl = "https://www.ebay.com/";
+	@Then("Page navigated to ebay home page")
+	public void page_navigated_to_ebay_Home_page() {
+	   // String expUrl = "https://www.ebay.com/";
+		String expUrl = common_actions.landingPageURI();
 	    String actUrl = common_actions.getCurrentPageUrl();
-	    if (!expUrl.equals(actUrl)) {
-	    	fail("Page does not naviage to home page");
-	    }
+		Assert.assertTrue("Expected navigation URL is not matching",expUrl.equals(actUrl));
 	}
 	
-	@When("I advanced search an item")
-	public void i_advanced_search_an_item(DataTable dataTable) throws Exception {
+	@When("User did advanced search")
+	public void User_did_advanced_search(DataTable dataTable) throws Exception {
 		ebayadvancedsearch_actions.enterSearchString(dataTable.cell(1, 0));
 		ebayadvancedsearch_actions.enterExcludeString(dataTable.cell(1, 1));
 		ebayadvancedsearch_actions.enterMinPrice(dataTable.cell(1, 2));

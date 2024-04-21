@@ -1,28 +1,37 @@
+/*
+ *Class : Common Actions class
+ *Author : VaibhavS
+ */
 package steps;
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import io.cucumber.java.After;
-import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxDriver;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+
+@Slf4j
 public class Common_Steps {
 	
 	private WebDriver driver;
-	
-	@Before(order = 0)
+	public static final String PathToDownloadFiles = System.getProperty("user.dir")+ File.separator+"downloadFiles";
+
+	@Before()
 	public void setUp() {
-		 /***
-		  * Selenium 4 Update: Providing chromedriver path is not required anymore.
-		  * This is taken care by webdriver manager automatically.
-		 ***/
-		 //System.setProperty("webdriver.chrome.driver", "webdrivers/chromedriver");
-		 driver = new ChromeDriver();
-		 System.out.println("Global Before Hook Executed");
+		driver =  createWebDriver("chrome");
+		log.info("Global Before Hook Executed");
 	}
 	
-	@After(order = 1)
+
+	@After()
 	public void tearDown(Scenario scenario) throws Exception {
 		if(scenario.isFailed()) {
 			//Take Screenshot
@@ -32,10 +41,43 @@ public class Common_Steps {
 		}
 		driver.quit();
 		Thread.sleep(1000);
-		System.out.println("Global After Hook Executed");
+		log.info("Global After Hook Executed");
 	}
-	
+
+
+	/*
+	 * Method :  Select WebBrowser
+	 */
 	public WebDriver getDriver() {
 		return driver;
 	}
+
+	/*
+	 * Method :  Select WebBrowser
+	 */
+	public static WebDriver createWebDriver(String browser){
+		switch (browser){
+			case "chrome":
+				return new ChromeDriver(new ChromeOptions());
+			case "firefox":
+				return  new FirefoxDriver();
+			default :
+				throw new RuntimeException("Unsupported webdriver : "+ browser);
+		}
+	}
+
+
+	/*
+	 * Method :  setting up the chrome browser setting
+	 */
+	public static ChromeOptions chromeOptions(){
+		Map<String,Object> chromePrefs =new HashMap<>();
+		chromePrefs.put("profile.default_content_setting.popups",0);
+		chromePrefs.put("download.default_directory",PathToDownloadFiles);
+
+		ChromeOptions chromeOptions = new ChromeOptions();
+		chromeOptions.setExperimentalOption("prefs",chromePrefs);
+		return chromeOptions;
+	}
+
 }

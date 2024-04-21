@@ -7,14 +7,16 @@ import io.cucumber.junit.CucumberOptions;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(
-		features = {"features"},
+		features = {"src/test/resources/features"},
 		glue = {"steps"},
-		plugin = {"pretty", "json:target/json-report/cucumber.json"},
+		plugin = {"pretty","html:target/report/cucumber.html","json:target/json-report/cucumber.json"},
 		dryRun = false,
 		monochrome = true,
-		tags = "@P1 or @P2"
-		//name = {"Logo"}
+		tags = "@regression"
 		)
+//mvn clean test -Drun=TestRunner
 public class TestRunner {
 
 }
+
+//		features = {"src/test/resources/features/EbayAdvancedSearch.feature"},

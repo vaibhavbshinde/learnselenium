@@ -9,12 +9,12 @@ import org.openqa.selenium.WebElement;
 import elements.EbayHome_Elements;
 import steps.Common_Steps;
 
-public class EbayHome_Actions {
+public class EbayHomePageActions {
 	
 	private WebDriver driver;
 	EbayHome_Elements ebayhome_elements;
 	
-	public EbayHome_Actions(Common_Steps common_steps) {
+	public EbayHomePageActions(Common_Steps common_steps) {
 		this.driver = common_steps.getDriver();
 		ebayhome_elements = new EbayHome_Elements(driver);
 	}
