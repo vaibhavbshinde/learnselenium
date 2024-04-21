@@ -1,9 +1,13 @@
+#maven
 target/
+
+#eclipse
 .classpath
 .project
 .settings/
-Report1/
-Report2
-Report3
-cucumber1/
 
+#Covers JetBrains IDEs : Intellj,
+*.iml
+.idea
+out
+.gradle
